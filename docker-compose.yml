@@ -11,79 +11,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /volumes/portainer/data:/data
 
-  nodered:
-    container_name: nodered
-    build: ./services/nodered/.
-    restart: unless-stopped
-    user: "0"
-    privileged: true
-    env_file: ./services/nodered/nodered.env
-    ports:
-      - 1880:1880
-    volumes:
-      - /volumes/nodered/data:/data
-
-  influxdb:
-    container_name: influxdb
-    image: "influxdb:latest"
-    restart: unless-stopped
-    ports:
-      - 8086:8086
-      - 8083:8083
-      - 2003:2003
-    env_file:
-      - ./services/influxdb/influxdb.env
-    volumes:
-      - /volumes/influxdb/data:/var/lib/influxdb
-      - /backups/influxdb/db:/var/lib/influxdb/backup
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:6.3.6
-    restart: unless-stopped
-    user: "0"
-    ports:
-      - 3000:3000
-    env_file:
-      - ./services/grafana/grafana.env
-    volumes:
-      - /volumes/grafana/data:/var/lib/grafana
-      - /volumes/grafana/log:/var/log/grafana
-
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto
-    restart: unless-stopped
-    user: "1883"
-    ports:
-      - 1883:1883
-      - 9001:9001
-    volumes:
-      - /volumes/mosquitto/data:/mosquitto/data
-      - /volumes/mosquitto/log:/mosquitto/log
-      - /services/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-
-
-  telegraf:
-    container_name: telegraf
-    image: telegraf
-    volumes:
-      - /services/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-    depends_on:
-      - influxdb
-      - mosquitto
-
-  postgres:
-    container_name: postgres
-    image: postgres
-    restart: unless-stopped
-    env_file:
-      - ./services/postgres/postgres.env
-    ports:
-      - 5432:5432
-    volumes:
-      - /volumes/postgres/data:/var/lib/postgresql/data
-
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
@@ -105,4 +32,21 @@ services:
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
     cap_add:
       - NET_ADMIN
+    restart: unless-stopped
+
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - VERSION=docker
+      - UMASK_SET=022 #optional
+    volumes:
+      - /volumes/plex/config:/config
+      - /media/pi/MansExternal/TV Shows:/tv
+      - /media/pi/MansExternal/Movies:/movies
+      - /media/pi/MansExternal/Music:/music
+      - /volumes/plex/transcode:/transcode
     restart: unless-stopped

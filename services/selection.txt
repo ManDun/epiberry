@@ -1,0 +1,3 @@
+portainer
+pihole
+plex
