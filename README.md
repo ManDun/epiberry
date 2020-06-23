@@ -196,3 +196,7 @@ If you use some of the tools in the project please consider donating or contribu
 ### Thanks
 
 @mrmx, @oscrx, @brianimmel, @Slyke, @AugustasV, @Paulf007, @affankingkhan, @877dev, @Paraphraser, @stfnhmplr, @peyanski, @cmskedgell
+
+
+docker build --tag pyutils:1.2 .
+docker run -v /var/log:/var/log pyutils:1.2 check_network

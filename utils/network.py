@@ -27,13 +27,14 @@ def check_internet_on():
         response_code = response.getcode()
 
         logger.info(f'Response Code: {response_code}')
+        influx.log_status(response_code)
 
         if response_code == const.SUCCESS_CODE:
             return True
         else:
             return False
 
-        influx.log_status(response_code)
+        
 
     except urllib.request.URLError as error:
         logger.error(f'URL Error: {error}')
