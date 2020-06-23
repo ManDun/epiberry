@@ -3,13 +3,14 @@ Module that contains methods to perform network operations
 
 To test this file, you can tun python3 network.py
 
-Users logzero
+Uses logzero
 """
 
 import urllib.request
 from logzero import logger
 from utils import const
 import ssl
+from utils import influx
 
 
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -25,12 +26,14 @@ def check_internet_on():
         response = urllib.request.urlopen(const.TEST_URL, timeout=1)
         response_code = response.getcode()
 
-        logger.info(f'URL open with response: {response_code}')
+        logger.info(f'Response Code: {response_code}')
 
         if response_code == const.SUCCESS_CODE:
             return True
         else:
             return False
+
+        influx.log_status(response_code)
 
     except urllib.request.URLError as error:
         logger.error(f'URL Error: {error}')
