@@ -35,6 +35,8 @@ def main():
         emails.setup_email()
     elif method_name in const.CHECK_NETWORK:
         network.check_internet_on()
+    elif method_name in const.SPEED_TEST:
+        network.speed_test()
     else:
         logger.error(f'Invalid argument: {method_name}')
     logger.debug('End from main')
